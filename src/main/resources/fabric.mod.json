@@ -1,0 +1,48 @@
+{
+	"schemaVersion": 1,
+	"id": "aichat",
+	"version": "${version}",
+	"name": "AIChat",
+	"description": "This is a Mod, wich adds a /ask command to communicate with the OpenAI API. To setup this Mod you have to use /config OPENAI_API_KEY <your openai api key>",
+	"authors": [
+		"Kialan"
+	],
+	"contact": {
+		"homepage": "https://fabricmc.net/"
+	},
+	"license": "CC0-1.0",
+	"icon": "assets/aichat/icon.png",
+	"environment": "*",
+	"entrypoints": {
+		"main": [
+			"de.aichat.AIChat"
+		],
+		"client": [
+			"de.aichat.AIChatClient"
+		]
+	},
+	"custom": {
+		"fabric-renderer-api-v1:contains_renderer": true,
+		"modmenu": {
+			"links": {
+				"get your API key": "https://platform.openai.com/settings/organization/api-keys"
+			}
+		}
+	},
+			"mixins": [
+		"aichat.mixins.json",
+		{
+			"config": "aichat.client.mixins.json",
+			"environment": "client"
+		}
+	],
+	"depends": {
+		"fabricloader": ">=0.16.9",
+		"minecraft": "~1.21.4",
+		"java": ">=21",
+		"fabric-api": "*"
+	},
+	"suggests": {
+		"another-mod": "*"
+	}
+}
