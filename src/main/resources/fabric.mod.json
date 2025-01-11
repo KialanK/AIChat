@@ -29,7 +29,7 @@
 			}
 		}
 	},
-			"mixins": [
+	"mixins": [
 		"aichat.mixins.json",
 		{
 			"config": "aichat.client.mixins.json",
@@ -37,12 +37,8 @@
 		}
 	],
 	"depends": {
-		"fabricloader": ">=0.16.9",
-		"minecraft": "~1.21.4",
-		"java": ">=21",
+		"fabricloader": ">=0.15",
+		"minecraft": "${mcdep}",
 		"fabric-api": "*"
-	},
-	"suggests": {
-		"another-mod": "*"
 	}
 }
