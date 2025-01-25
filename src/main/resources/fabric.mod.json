@@ -16,9 +16,6 @@
 	"entrypoints": {
 		"main": [
 			"de.aichat.AIChat"
-		],
-		"client": [
-			"de.aichat.AIChatClient"
 		]
 	},
 	"custom": {
@@ -29,13 +26,6 @@
 			}
 		}
 	},
-	"mixins": [
-		"aichat.mixins.json",
-		{
-			"config": "aichat.client.mixins.json",
-			"environment": "client"
-		}
-	],
 	"depends": {
 		"fabricloader": ">=0.15",
 		"minecraft": "${mcdep}",
