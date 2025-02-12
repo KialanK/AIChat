@@ -6,10 +6,10 @@ import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import net.fabricmc.api.ModInitializer;
-import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
-import net.minecraft.server.command.CommandManager;
-import net.minecraft.server.command.ServerCommandSource;
+import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
+import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
 import net.minecraft.text.Text;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +18,7 @@ import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 
-public class AIChat implements ModInitializer {
+public class AIChat implements ClientModInitializer {
 	public static final String MOD_ID = "aichat";
 	public static final Logger LOGGER = LoggerFactory.getLogger(MOD_ID);
 
@@ -31,7 +31,7 @@ public class AIChat implements ModInitializer {
 	private static final String CONFIG_FILE_PATH = "config/aichat-config.json";
 
 	@Override
-	public void onInitialize() {
+	public void onInitializeClient() {
 		// Load the configuration from file
 		loadConfig();
 
@@ -39,22 +39,23 @@ public class AIChat implements ModInitializer {
 		LOGGER.info("Moin Moin");
 
 		// Register the commands
-		CommandRegistrationCallback.EVENT.register((dispatcher, registryAccess, environment) -> {
+// Register the commands
+		ClientCommandRegistrationCallback.EVENT.register((dispatcher, registryAccess) -> {
 			// Command to interact with OpenAI
-			dispatcher.register(CommandManager.literal("ask")
-					.then(CommandManager.argument("question", StringArgumentType.greedyString())
+			dispatcher.register(ClientCommandManager.literal("ask")
+					.then(ClientCommandManager.argument("question", StringArgumentType.greedyString())
 							.executes(this::askOpenAI)));
 
 			// Command to configure settings
-			dispatcher.register(CommandManager.literal("config")
-					.then(CommandManager.literal("OPENAI_API_KEY")
-							.then(CommandManager.argument("value", StringArgumentType.string())
+			dispatcher.register(ClientCommandManager.literal("config")
+					.then(ClientCommandManager.literal("OPENAI_API_KEY")
+							.then(ClientCommandManager.argument("value", StringArgumentType.string())
 									.executes(context -> setConfig(context, "OPENAI_API_KEY"))))
-					.then(CommandManager.literal("ROLE_OF_THE_AI")
-							.then(CommandManager.argument("value", StringArgumentType.greedyString())
+					.then(ClientCommandManager.literal("ROLE_OF_THE_AI")
+							.then(ClientCommandManager.argument("value", StringArgumentType.greedyString())
 									.executes(context -> setConfig(context, "ROLE_OF_THE_AI"))))
-					.then(CommandManager.literal("AI_MODEL")
-							.then(CommandManager.argument("value", StringArgumentType.string())
+					.then(ClientCommandManager.literal("AI_MODEL")
+							.then(ClientCommandManager.argument("value", StringArgumentType.string())
 									.executes(context -> setConfig(context, "AI_MODEL")))));
 		});
 	}
@@ -112,20 +113,20 @@ public class AIChat implements ModInitializer {
 	}
 
 	// Handle the /ask command
-	private int askOpenAI(CommandContext<ServerCommandSource> context) throws CommandSyntaxException {
+	private int askOpenAI(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
 		String question = StringArgumentType.getString(context, "question");
-		ServerCommandSource source = context.getSource();
+		FabricClientCommandSource source = context.getSource();
 
 		// Notify the user that the response is being generated
-		source.sendFeedback(() -> Text.literal("Generating response..."), false);
+		source.sendFeedback(Text.literal("Generating response..."));
 
 		// Run the OpenAI API call in a separate thread
 		new Thread(() -> {
 			try {
 				String response = chatGPT(question);
-				source.sendFeedback(() -> Text.literal("Response: " + response), false);
+				source.sendFeedback(Text.literal("Response: " + response));
 			} catch (Exception e) {
-				source.sendFeedback(() -> Text.literal("Failed to fetch response: " + e.getMessage()), false);
+				source.sendFeedback(Text.literal("Failed to fetch response: " + e.getMessage()));
 				LOGGER.error("Error while communicating with OpenAI API", e);
 			}
 		}).start();
@@ -134,9 +135,9 @@ public class AIChat implements ModInitializer {
 	}
 
 	// Handle the /config command
-	private int setConfig(CommandContext<ServerCommandSource> context, String key) {
+	private int setConfig(CommandContext<FabricClientCommandSource> context, String key) {
 		String value = StringArgumentType.getString(context, "value");
-		ServerCommandSource source = context.getSource();
+		FabricClientCommandSource source = context.getSource();
 
 		// Update the configuration based on the key
 		switch (key) {
@@ -150,12 +151,12 @@ public class AIChat implements ModInitializer {
 				model = value;
 				break;
 			default:
-				source.sendFeedback(() -> Text.literal("Invalid config key: " + key), false);
+				source.sendFeedback(Text.literal("Invalid config key: " + key));
 				return 0; // Command failed
 		}
 
 		saveConfig();
-		source.sendFeedback(() -> Text.literal("Configuration updated: " + key + " = " + value), false);
+		source.sendFeedback(Text.literal("Configuration updated: " + key + " = " + value));
 		return 1; // Command executed successfully
 	}
 
@@ -206,4 +207,3 @@ public class AIChat implements ModInitializer {
 		return rawContent.replace("\\n", " ");
 	}
 }
-

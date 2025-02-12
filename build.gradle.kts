@@ -53,11 +53,11 @@ dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings("net.fabricmc:yarn:$mcVersion+build.${deps["yarn_build"]}:v2")
     modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
+    modApi(fabricApi.module("fabric-command-api-v2", deps["fabric_api"]))
+    modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:${deps["fabric_api"]}")
 
     fapi(
         // Add modules from https://github.com/FabricMC/fabric
-        "fabric-lifecycle-events-v1",
-        "fabric-command-api-v2",
         "fabric-api",
     )
 }

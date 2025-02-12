@@ -14,7 +14,7 @@
 	"icon": "assets/aichat/icon.png",
 	"environment": "*",
 	"entrypoints": {
-		"main": [
+		"client": [
 			"de.aichat.AIChat"
 		]
 	},
@@ -29,6 +29,7 @@
 	"depends": {
 		"fabricloader": ">=0.15",
 		"minecraft": "${mcdep}",
-		"fabric-api": "*"
+		"fabric-api": "*",
+		"fabric": "*"
 	}
 }
