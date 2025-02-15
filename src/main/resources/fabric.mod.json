@@ -12,7 +12,7 @@
 	},
 	"license": "CC0-1.0",
 	"icon": "assets/aichat/icon.png",
-	"environment": "*",
+	"environment": "client",
 	"entrypoints": {
 		"client": [
 			"de.aichat.AIChat"
@@ -28,7 +28,7 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.15",
-		"minecraft": "${mcdep}",
+		"minecraft": "*",
 		"fabric-api": "*",
 		"fabric": "*"
 	}

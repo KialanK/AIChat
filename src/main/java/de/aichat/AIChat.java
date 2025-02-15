@@ -5,7 +5,6 @@ import com.google.gson.JsonParser;
 import com.google.gson.JsonPrimitive;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
@@ -113,7 +112,7 @@ public class AIChat implements ClientModInitializer {
 	}
 
 	// Handle the /ask command
-	private int askOpenAI(CommandContext<FabricClientCommandSource> context) throws CommandSyntaxException {
+	private int askOpenAI(CommandContext<FabricClientCommandSource> context) {
 		String question = StringArgumentType.getString(context, "question");
 		FabricClientCommandSource source = context.getSource();
 

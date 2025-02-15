@@ -1,163 +1,63 @@
 plugins {
-    `maven-publish`
-    id("fabric-loom")
-    //id("dev.kikugie.j52j")
-    //id("me.modmuss50.mod-publish-plugin")
+    id("fabric-loom") version "1.9-SNAPSHOT"
+    id("maven-publish")
 }
 
-class ModData {
-    val id = property("mod.id").toString()
-    val name = property("mod.name").toString()
-    val version = property("mod.version").toString()
-    val group = property("mod.group").toString()
+base {
+    archivesName.set(project.property("archives_base_name") as String)
 }
 
-class ModDependencies {
-    operator fun get(name: String) = property("deps.$name").toString()
-}
-
-val mod = ModData()
-val deps = ModDependencies()
 val mcVersion = stonecutter.current.version
-val mcDep = property("mod.mc_dep").toString()
-
-version = "${mod.version}+$mcVersion"
-group = mod.group
-base { archivesName.set(mod.id) }
-
-loom {
-    splitEnvironmentSourceSets()
-
-    mods {
-        create("aichat") {
-            sourceSet(sourceSets["main"])
-            sourceSet(sourceSets["client"])
-        }
-    }
-}
 
 repositories {
-    fun strictMaven(url: String, alias: String, vararg groups: String) = exclusiveContent {
-        forRepository { maven(url) { name = alias } }
-        filter { groups.forEach(::includeGroup) }
-    }
-    strictMaven("https://www.cursemaven.com", "CurseForge", "curse.maven")
-    strictMaven("https://api.modrinth.com/maven", "Modrinth", "maven.modrinth")
+    // Add repositories to retrieve artifacts from in here.
 }
 
+version = "${property("mod_version")}+$mcVersion"
+group = project.property("maven_group") as String
+
 dependencies {
-    fun fapi(vararg modules: String) = modules.forEach {
-        modImplementation(fabricApi.module(it, deps["fabric_api"]))
-    }
-
     minecraft("com.mojang:minecraft:$mcVersion")
-    mappings("net.fabricmc:yarn:$mcVersion+build.${deps["yarn_build"]}:v2")
-    modImplementation("net.fabricmc:fabric-loader:${deps["fabric_loader"]}")
-    modApi(fabricApi.module("fabric-command-api-v2", deps["fabric_api"]))
-    modLocalRuntime("net.fabricmc.fabric-api:fabric-api-deprecated:${deps["fabric_api"]}")
+    mappings("net.fabricmc:yarn:${property("deps.yarn_mappings")}:v2")
+    modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
+    modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
+}
 
-    fapi(
-        // Add modules from https://github.com/FabricMC/fabric
-        "fabric-api",
-    )
+tasks.processResources {
+    inputs.property("version", project.version)
+
+    filesMatching("fabric.mod.json") {
+        expand(mapOf("version" to project.version))
+    }
 }
 
 loom {
-    decompilers {
-        get("vineflower").apply { // Adds names to lambdas - useful for mixins
-            options.put("mark-corresponding-synthetics", "1")
-        }
-    }
-
     runConfigs.all {
-        ideConfigGenerated(true)
-        vmArgs("-Dmixin.debug.export=true")
-        runDir = "../../run"
+        ideConfigGenerated(true) // Run configurations are not created for subprojects by default
+        runDir = "../../run" // Use a shared run folder and create separate worlds
     }
 }
 
 java {
     withSourcesJar()
-    val java = if (stonecutter.eval(mcVersion, ">=1.20.6")) JavaVersion.VERSION_21 else JavaVersion.VERSION_17
-    targetCompatibility = java
-    sourceCompatibility = java
+    sourceCompatibility = JavaVersion.VERSION_21
+    targetCompatibility = JavaVersion.VERSION_21
 }
 
-tasks.processResources {
-    inputs.property("id", mod.id)
-    inputs.property("name", mod.name)
-    inputs.property("version", mod.version)
-    inputs.property("mcdep", mcDep)
-
-    val map = mapOf(
-        "id" to mod.id,
-        "name" to mod.name,
-        "version" to mod.version,
-        "mcdep" to mcDep
-    )
-
-    filesMatching("fabric.mod.json") { expand(map) }
-}
-
-tasks.register<Copy>("buildAndCollect") {
-    group = "build"
-    from(tasks.remapJar.get().archiveFile)
-    into(rootProject.layout.buildDirectory.file("libs/${mod.version}"))
-    dependsOn("build")
-}
-
-/*
-publishMods {
-    file = tasks.remapJar.get().archiveFile
-    additionalFiles.from(tasks.remapSourcesJar.get().archiveFile)
-    displayName = "${mod.name} ${mod.version} for $mcVersion"
-    version = mod.version
-    changelog = rootProject.file("CHANGELOG.md").readText()
-    type = STABLE
-    modLoaders.add("fabric")
-
-    dryRun = providers.environmentVariable("MODRINTH_TOKEN")
-        .getOrNull() == null || providers.environmentVariable("CURSEFORGE_TOKEN").getOrNull() == null
-
-    modrinth {
-        projectId = property("publish.modrinth").toString()
-        accessToken = providers.environmentVariable("MODRINTH_TOKEN")
-        minecraftVersions.add(mcVersion)
-        requires {
-            slug = "fabric-api"
-        }
-    }
-
-    curseforge {
-        projectId = property("publish.curseforge").toString()
-        accessToken = providers.environmentVariable("CURSEFORGE_TOKEN")
-        minecraftVersions.add(mcVersion)
-        requires {
-            slug = "fabric-api"
-        }
+val jar by tasks.getting(Jar::class) {
+    from("LICENSE") {
+        rename { "${it}_${project.property("archives_base_name")}" }
     }
 }
-*/
-/*
+
 publishing {
-    repositories {
-        maven("...") {
-            name = "..."
-            credentials(PasswordCredentials::class.java)
-            authentication {
-                create<BasicAuthentication>("basic")
-            }
-        }
-    }
-
     publications {
         create<MavenPublication>("mavenJava") {
-            groupId = "${property("mod.group")}.${mod.id}"
-            artifactId = mod.version
-            version = mcVersion
-
+            artifactId = project.property("archives_base_name") as String
             from(components["java"])
         }
     }
+    repositories {
+        // Add repositories to publish to here.
+    }
 }
-*/
