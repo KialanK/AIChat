@@ -1,4 +1,5 @@
-**This mod adds a command that allows you to communicate with ChatGPT while playing Minecraft**. With the added ```/ask``` command, you can ask any question you want and receive an answer in the Minecraft chat:
+**This fully client side mod adds a command that allows you to communicate with ChatGPT while playing Minecraft**. It also works while you are playing on a Server. With the added ```/ask``` command, you can ask any question you want and receive an answer in the Minecraft chat:
+
 
 
 ![Question](https://cdn.modrinth.com/data/cached_images/54b8596cf84c75b9dd4c72032d4aa8ed5d9e3a10_0.webp)
