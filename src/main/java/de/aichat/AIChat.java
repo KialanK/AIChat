@@ -1,8 +1,10 @@
 package de.aichat;
 
 import net.fabricmc.api.ClientModInitializer;
+import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
 
 public class AIChat implements ClientModInitializer {
 	public static final String MOD_ID = "aichat";
@@ -17,6 +19,8 @@ public class AIChat implements ClientModInitializer {
 		config = new AIChatConfig();
 		openAIAPI = new OpenAIAPI(config);
 		commands = new AIChatCommands(config, openAIAPI);
+
+		ClientTickEvents.START_CLIENT_TICK.register(client -> commands.tick());
 
 		LOGGER.info("Moin Moin");
 

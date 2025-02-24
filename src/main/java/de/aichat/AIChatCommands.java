@@ -5,11 +5,13 @@ import com.mojang.brigadier.context.CommandContext;
 import net.fabricmc.fabric.api.client.command.v2.FabricClientCommandSource;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandManager;
 import net.fabricmc.fabric.api.client.command.v2.ClientCommandRegistrationCallback;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.text.Text;
 
 public class AIChatCommands {
     private final AIChatConfig config;
     private final OpenAIAPI openAIAPI;
+    private static boolean openScreen = false;
 
     public AIChatCommands(AIChatConfig config, OpenAIAPI openAIAPI) {
         this.config = config;
@@ -25,6 +27,10 @@ public class AIChatCommands {
 
             // Command to configure settings
             dispatcher.register(ClientCommandManager.literal("config")
+                    .executes(context -> {
+                        openScreen = true;
+                        return 1;
+                    })
                     .then(ClientCommandManager.literal("OPENAI_API_KEY")
                             .then(ClientCommandManager.argument("value", StringArgumentType.string())
                                     .executes(context -> setConfig(context, "OPENAI_API_KEY"))))
@@ -35,6 +41,13 @@ public class AIChatCommands {
                             .then(ClientCommandManager.argument("value", StringArgumentType.string())
                                     .executes(context -> setConfig(context, "AI_MODEL")))));
         });
+    }
+
+    public void tick() {
+        if (openScreen) {
+            openScreen = false;
+            MinecraftClient.getInstance().setScreen(new AIChatConfigScreen(null, config));
+        }
     }
 
     private int askOpenAI(CommandContext<FabricClientCommandSource> context) {

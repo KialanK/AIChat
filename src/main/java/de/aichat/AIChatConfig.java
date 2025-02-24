@@ -58,7 +58,7 @@ public class AIChatConfig {
     }
 
     private void createDefaultConfig() {
-        apiKey = "use /config OPENAI_API_KEY to insert you API key";
+        apiKey = "";
         content = "You are an assistant implemented in a Minecraft Mod to help players and you give short answers with a maximum length of 4 short Sentences";
         model = "gpt-3.5-turbo";
         saveConfig();

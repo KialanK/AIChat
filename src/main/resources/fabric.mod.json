@@ -10,7 +10,7 @@
 	"contact": {
 		"homepage": "https://fabricmc.net/"
 	},
-	"license": "CC0-1.0",
+	"license": "MIT",
 	"icon": "assets/aichat/icon.png",
 	"environment": "client",
 	"entrypoints": {
