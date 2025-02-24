@@ -68,11 +68,11 @@ public class AIChatConfigScreen extends Screen {
             config.setModel(modelField.getText());
             config.saveConfig();
             close();
-        }).dimensions(width / 2 - 50, height - 270, 100, 20).build());
+        }).dimensions(width / 2 - 50, height - 90, 100, 20).build());
 
         // Cancel Button
         addDrawableChild(ButtonWidget.builder(Text.literal("Cancel"), button -> close())
-                .dimensions(width / 2 - 50, height - 240, 100, 20).build());
+                .dimensions(width / 2 - 50, height - 60, 100, 20).build());
     }
 
     @Override

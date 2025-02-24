@@ -13,7 +13,7 @@ repositories {
     // Add repositories to retrieve artifacts from in here.
 }
 
-version = "${property("mod_version")}-$mcVersion"
+version = "${property("mod_version")}[Fabric$mcVersion]"
 group = project.property("maven_group") as String
 
 dependencies {

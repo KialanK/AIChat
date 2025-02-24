@@ -3,7 +3,7 @@
 	"id": "aichat",
 	"version": "${version}",
 	"name": "AIChat",
-	"description": "This is a Mod, wich adds a /ask command to communicate with the OpenAI API. To setup this Mod you have to use /config OPENAI_API_KEY <your openai api key>",
+	"description": "This is a Mod, wich adds a /ask command to communicate with the OpenAI API. To setup this Mod you have to use /config and insert you API Key at the API Key Field",
 	"authors": [
 		"Kialan"
 	],
