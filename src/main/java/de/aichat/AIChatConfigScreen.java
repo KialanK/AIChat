@@ -1,10 +1,12 @@
 package de.aichat;
 
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
 import net.minecraft.client.gui.widget.TextFieldWidget;
 import net.minecraft.text.Text;
+import net.minecraft.util.Util;
 
 public class AIChatConfigScreen extends Screen {
     private final Screen parent;
@@ -61,6 +63,36 @@ public class AIChatConfigScreen extends Screen {
         modelField.setText(config.getModel());
         addDrawableChild(modelField);
 
+        //Clear Button for the key field
+        addDrawableChild(ButtonWidget.builder(Text.literal("Clear"), button -> {
+            apiKeyField.setText("");
+        }).dimensions(width / 2 - 210, 60, 100, 20).build());
+
+        //Clear Button for the role field
+        addDrawableChild(ButtonWidget.builder(Text.literal("Clear"), button -> {
+            roleField.setText("");
+        }).dimensions(width / 2 - 210, 100, 100, 20).build());
+
+        //Clear Button for the model field
+        addDrawableChild(ButtonWidget.builder(Text.literal("Clear"), button -> {
+            modelField.setText("");
+        }).dimensions(width / 2 - 210, 140, 100, 20).build());
+
+        //Reset Button for the api field
+        addDrawableChild(ButtonWidget.builder(Text.literal("Get API Key"), button -> {
+            Util.getOperatingSystem().open("https://platform.openai.com/settings/organization/api-keys");
+        }).dimensions(width / 2 + 110, 60, 100, 20).build());
+
+        //Reset Button for the role field
+        addDrawableChild(ButtonWidget.builder(Text.literal("Reset"), button -> {
+            roleField.setText("You are an assistant implemented in a Minecraft Mod to help players and you give short answers with a maximum length of 4 short Sentences");
+        }).dimensions(width / 2 + 110, 100, 100, 20).build());
+
+        //Reset Button for the model field
+        addDrawableChild(ButtonWidget.builder(Text.literal("Reset"), button -> {
+            modelField.setText("gpt-3.5-turbo");
+        }).dimensions(width / 2 + 110, 140, 100, 20).build());
+
         // Save Button
         addDrawableChild(ButtonWidget.builder(Text.literal("Save"), button -> {
             config.setApiKey(apiKeyField.getText());
@@ -68,6 +100,10 @@ public class AIChatConfigScreen extends Screen {
             config.setModel(modelField.getText());
             config.saveConfig();
             close();
+            MinecraftClient client = MinecraftClient.getInstance();
+            if (client.player != null) {
+                client.player.sendMessage(Text.literal("Configuration updated!"), false);
+            }
         }).dimensions(width / 2 - 50, height - 90, 100, 20).build());
 
         // Cancel Button
