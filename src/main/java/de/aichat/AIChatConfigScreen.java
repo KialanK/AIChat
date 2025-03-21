@@ -90,7 +90,7 @@ public class AIChatConfigScreen extends Screen {
 
         //Reset Button for the model field
         addDrawableChild(ButtonWidget.builder(Text.literal("Reset"), button -> {
-            modelField.setText("gpt-3.5-turbo");
+            modelField.setText("gpt-4o-mini");
         }).dimensions(width / 2 + 110, 140, 100, 20).build());
 
         // Save Button

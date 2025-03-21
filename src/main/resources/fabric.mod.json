@@ -18,6 +18,9 @@
 			"de.aichat.AIChat"
 		]
 	},
+	"mixins": [
+		"aichat.mixins.json"
+	],
 	"custom": {
 		"fabric-renderer-api-v1:contains_renderer": true,
 		"modmenu": {

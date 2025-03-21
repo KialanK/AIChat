@@ -13,9 +13,11 @@ public class AIChat implements ClientModInitializer {
 	private AIChatConfig config;
 	private OpenAIAPI openAIAPI;
 	private AIChatCommands commands;
+	private OpenAIImageAPI imageAPI;
 
 	@Override
 	public void onInitializeClient() {
+		imageAPI = new OpenAIImageAPI(config);
 		config = new AIChatConfig();
 		openAIAPI = new OpenAIAPI(config);
 		commands = new AIChatCommands(config, openAIAPI);

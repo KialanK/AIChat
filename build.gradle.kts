@@ -19,6 +19,7 @@ group = project.property("maven_group") as String
 dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
     mappings("net.fabricmc:yarn:${property("deps.yarn_mappings")}:v2")
+    implementation("com.google.code.gson:gson:2.8.9")
     modImplementation("net.fabricmc:fabric-loader:${property("deps.fabric_loader")}")
     modImplementation("net.fabricmc.fabric-api:fabric-api:${property("deps.fabric_api")}")
 }
