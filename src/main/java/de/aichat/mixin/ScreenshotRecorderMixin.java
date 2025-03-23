@@ -9,6 +9,7 @@ import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
+import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -21,6 +22,7 @@ import static net.minecraft.client.util.ScreenshotRecorder.takeScreenshot;
 
 @Mixin(ScreenshotRecorder.class)
 public class ScreenshotRecorderMixin {
+    @Unique
     private static File getScreenshotFilename(File directory) {
         String string = Util.getFormattedCurrentTime();
         int i = 1;
@@ -56,7 +58,7 @@ public class ScreenshotRecorderMixin {
                 Thread.sleep(10);
                 Text upload = Text.literal("idk");
                     messageReceiver.accept(Text.translatable("[Send to OpenAI]", upload).formatted(Formatting.BOLD).styled(style -> style
-                            .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/askimage screenshots/" + file2.getName()))
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/askimage screenshots/" + file2.getName() + " "))
                             .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.of("Ask ChatGPT something about this picture!")))
                     ));
             } catch (IOException | InterruptedException e) {

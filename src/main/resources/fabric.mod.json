@@ -22,7 +22,6 @@
 		"aichat.mixins.json"
 	],
 	"custom": {
-		"fabric-renderer-api-v1:contains_renderer": true,
 		"modmenu": {
 			"links": {
 				"get your API key": "https://platform.openai.com/settings/organization/api-keys"
@@ -31,7 +30,7 @@
 	},
 	"depends": {
 		"fabricloader": ">=0.15",
-		"minecraft": "*",
+		"minecraft": "${mcVersion}",
 		"fabric-api": "*",
 		"fabric": "*"
 	}

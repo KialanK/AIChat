@@ -26,9 +26,10 @@ dependencies {
 
 tasks.processResources {
     inputs.property("version", project.version)
+    inputs.property("mcVersion", mcVersion)
 
     filesMatching("fabric.mod.json") {
-        expand(mapOf("version" to project.version))
+        expand(mapOf("version" to project.version, "mcVersion" to mcVersion))
     }
 }
 
